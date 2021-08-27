@@ -8,7 +8,7 @@ request.onupgradeneeded = function (event) {
     //save a refrence to the database
     const db = event.target.result;
     // create an object store (table) called `new_pizza`, set it to have an auto incrementing primary key of sorts 
-    db.createObjectStore('new_budget', { autoIncrement: true });
+    db.createObjectStore('new_transaction', { autoIncrement: true });
 };
 
 request.onsuccess = function (event) {
@@ -16,7 +16,7 @@ request.onsuccess = function (event) {
     db = event.target.result;
     //check if app is online, if yes run function
     if (navigator.onLine) {
-        uploadBudget();
+        uploadTransaction();
     }
 };
 
@@ -26,16 +26,18 @@ request.onerror = function (event) {
 
 //function will be exxecuted if no internet connection is available
 function saveRecord(record) {
-    const transaction = db.transaction(['new_budget'], 'readwrite');
+    const transaction = db.transaction(['new_transaction'], 'readwrite');
+
+    const budgetObjectStore = transaction.objectStore('new_transaction');
     //add record to store
     budgetObjectStore.onupgradeneeded(record);
 }
 
-function uploadBudget() {
+function uploadTransaction() {
     //open transaction on db
-    const transaction = db.transaction(['new_budget', 'readwrite']);
+    const transaction = db.transaction(['new_transaction', 'readwrite']);
     //access object store
-    const budgetObjectStore = transaction.objectStore('new_budget');
+    const budgetObjectStore = transaction.objectStore('new_transaction');
     //get all records from store
     const getAll = budgetObjectStore.getAll();
 
@@ -54,9 +56,9 @@ function uploadBudget() {
                     if (serverResponse.message) {
                         throw new Error(serverResponse);
                     }
-                    const transaction = db.transaction(['new_budget'], 'readwrite');
+                    const transaction = db.transaction(['new_transaction'], 'readwrite');
                     //access new_budget object store
-                    const budgetObjectStore = transaction.objectStore('new_budget');
+                    const budgetObjectStore = transaction.objectStore('new_transaction');
                     //clear all item in store
                     budgetObjectStore.clear();
                     alert('All saved transactions have been submitted');
@@ -69,4 +71,4 @@ function uploadBudget() {
 }
 
 //listen for app coming back online
-window.addEventListener('online', uploadBudget);
+window.addEventListener('online', uploadTransaction);
