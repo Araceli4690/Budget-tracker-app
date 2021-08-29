@@ -1,12 +1,21 @@
 //varaible to holf db connection
 let db;
+
+//
+const indexedDB =
+    window.indexedDB ||
+    window.mozIndexedDB ||
+    window.webkitIndexedDB ||
+    window.msIndexedDB ||
+    window.shimIndexedDB;
+
 //establish connection
 const request = indexedDB.open('budget_tracker', 1);
 
 // this event will emit if the database version changes (nonexistant to version 1, v1 to v2, etc.)
 request.onupgradeneeded = function (event) {
     //save a refrence to the database
-    const db = event.target.result;
+    let db = event.target.result;
     // create an object store (table) called `new_pizza`, set it to have an auto incrementing primary key of sorts 
     db.createObjectStore('new_transaction', { autoIncrement: true });
 };
@@ -28,9 +37,9 @@ request.onerror = function (event) {
 function saveRecord(record) {
     const transaction = db.transaction(['new_transaction'], 'readwrite');
 
-
+    const budgetObjectStore = transaction.objectStore('new_transaction');
     //add record to store
-    budgetObjectStore.onupgradeneeded(record);
+    budgetObjectStore.add(record);
 }
 
 function uploadTransaction() {
