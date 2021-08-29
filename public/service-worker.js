@@ -48,6 +48,7 @@ self.addEventListener('activate', function (e) {
     )
 })
 
+
 //telling app how to retrieve info from cache
 self.addEventListener('fetch', function (e) {
     console.log('fetch request: ' + e.request.url)

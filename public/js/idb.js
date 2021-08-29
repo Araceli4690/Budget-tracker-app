@@ -28,14 +28,14 @@ request.onerror = function (event) {
 function saveRecord(record) {
     const transaction = db.transaction(['new_transaction'], 'readwrite');
 
-    const budgetObjectStore = transaction.objectStore('new_transaction');
+
     //add record to store
     budgetObjectStore.onupgradeneeded(record);
 }
 
 function uploadTransaction() {
     //open transaction on db
-    const transaction = db.transaction(['new_transaction', 'readwrite']);
+    const transaction = db.transaction(['new_transaction'], 'readwrite');
     //access object store
     const budgetObjectStore = transaction.objectStore('new_transaction');
     //get all records from store
